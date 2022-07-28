@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
-import * as yup from "yup";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -16,7 +16,6 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   const handleSubmit = values => {
-    console.log(values);
     const { email, password } = values;
     signInWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
@@ -33,78 +32,71 @@ const SignIn = () => {
     navigate("/");
   };
 
-  const initialValues = {
-    email: "",
-    password: ""
-  };
-
-  const schema = yup.object().shape({
-    email: yup.string().required().email(),
-    password: yup.string().required()
+  /* Formik config form */
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: ""
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().email("Invalid email address").required("Required"),
+      password: Yup.string().required("Required")
+    }),
+    onSubmit: values => {
+      console.log(JSON.stringify(values, null, 2));
+      handleSubmit(values);
+    }
   });
 
   return (
-    <Formik
-      validationSchema={schema}
-      onSubmit={handleSubmit}
-      initialValues={initialValues}
-    >
-      {({
-        handleSubmit,
-        handleChange,
-        handleBlur,
-        values,
-        touched,
-        isValid,
-        errors
-      }) =>
-        <Container>
-          <Row>
-            <Col className="col-md-3 mx-auto mt-5">
-              <h1 className="my-4">Sign In</h1>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3" controlId="validationFormikEmail">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control
-                    type="email"
-                    placeholder="Email"
-                    name="email"
-                    value={values.email}
-                    onChange={handleChange}
-                    isInvalid={!!errors.email}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.email}
+    <Container>
+      <Row>
+        <Col className="col-md-3 mx-auto mt-5">
+          <h1 className="my-4">Sign In</h1>
+          <Form onSubmit={formik.handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label htmlFor="email">Email </Form.Label>
+              <Form.Control
+                id="email"
+                name="email"
+                type="email"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.email}
+                isInvalid={!!formik.errors.email}
+              />
+              {formik.touched.email && formik.errors.email
+                ? <Form.Control.Feedback type="invalid">
+                    {formik.errors.email}
                   </Form.Control.Feedback>
-                </Form.Group>
+                : null}
+            </Form.Group>
 
-                <Form.Group className="mb-3" controlId="validationFormikEmail">
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Password"
-                    name="password"
-                    value={values.password}
-                    onChange={handleChange}
-                    isInvalid={!!errors.password}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.password}
+            <Form.Group className="mb-3">
+              <Form.Label htmlFor="password">Password </Form.Label>
+              <Form.Control
+                id="password"
+                name="password"
+                type="password"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
+                isInvalid={!!formik.errors.password}
+              />
+              {formik.touched.password && formik.errors.password
+                ? <Form.Control.Feedback type="invalid">
+                    {formik.errors.password}
                   </Form.Control.Feedback>
-                </Form.Group>
-                <Button
-                  className="w-100"
-                  size="lg"
-                  variant="primary"
-                  type="submit"
-                >
-                  Sign in
-                </Button>
-              </Form>
-            </Col>
-          </Row>
-        </Container>}
-    </Formik>
+                : null}
+            </Form.Group>
+
+            <Button className="w-100" size="lg" variant="primary" type="submit">
+              Sign in
+            </Button>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
