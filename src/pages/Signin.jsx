@@ -43,7 +43,6 @@ const SignIn = () => {
       password: Yup.string().required("Required")
     }),
     onSubmit: values => {
-      console.log(JSON.stringify(values, null, 2));
       handleSubmit(values);
     }
   });

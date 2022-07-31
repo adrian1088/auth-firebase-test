@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { auth, db } from "../config/firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -11,19 +13,14 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
 const SignUp = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = e => {
-    e.preventDefault();
+  const handleSubmit = values => {
+    const { firstName, lastName, email, password } = values;
     createUserWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
         // Signed up
         const user = userCredential.user;
-        console.log("user: ", user);
         set(ref(db, "users/" + userCredential.user.uid), {
           firstName: firstName,
           lastName: lastName,
@@ -31,51 +28,106 @@ const SignUp = () => {
         });
       })
       .catch(error => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log("errorCode: ", errorCode);
-        console.log("errorMessage: ", errorMessage);
+        const errObj = {
+          errorCode:error.code,
+          errorMessage: error.message
+        };
+        console.log("Error:",errObj);
       });
     navigate("/");
   };
 
+  /* Formik config form */
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: ""
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string().required("Required"),
+      lastName: Yup.string().required("Required"),
+      email: Yup.string().email("Invalid email address").required("Required"),
+      password: Yup.string().required("Required")
+    }),
+    onSubmit: values => {
+      handleSubmit(values);
+    }
+  });
   return (
     <Container>
       <Row>
         <Col className="col-md-3 mx-auto mt-5">
           <h1 className="my-4">Sign Up</h1>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={formik.handleSubmit}>
             <Form.Group className="mb-3">
+              <Form.Label htmlFor="firstName">First Name </Form.Label>
               <Form.Control
+                name="firstName"
                 type="text"
-                placeholder="First name"
                 size="lg"
-                onChange={e => setFirstName(e.target.value)}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.firstName}
+                isInvalid={!!formik.errors.firstName}
               />
+              {formik.touched.firstName && formik.errors.firstName
+                ? <Form.Control.Feedback type="invalid">
+                    {formik.errors.firstName}
+                  </Form.Control.Feedback>
+                : null}
             </Form.Group>
             <Form.Group className="mb-3">
+              <Form.Label htmlFor="lastName">Last Name </Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Last name"
+                name="lastName"
                 size="lg"
-                onChange={e => setLastName(e.target.value)}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.lastName}
+                isInvalid={!!formik.errors.lastName}
               />
+              {formik.touched.lastName && formik.errors.lastName
+                ? <Form.Control.Feedback type="invalid">
+                    {formik.errors.lastName}
+                  </Form.Control.Feedback>
+                : null}
             </Form.Group>
             <Form.Group className="mb-3">
+            <Form.Label htmlFor="email">Email </Form.Label>
               <Form.Control
                 type="email"
-                placeholder="Email"
+                name="email"
                 size="lg"
-                onChange={e => setEmail(e.target.value)}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.email}
+                isInvalid={!!formik.errors.email}
               />
+              {formik.touched.email && formik.errors.email
+                ? <Form.Control.Feedback type="invalid">
+                    {formik.errors.email}
+                  </Form.Control.Feedback>
+                : null}
             </Form.Group>
             <Form.Group className="mb-3">
+            <Form.Label htmlFor="password">Password </Form.Label>
               <Form.Control
                 type="password"
-                placeholder="Password"
+                name="password"
                 size="lg"
-                onChange={e => setPassword(e.target.value)}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
+                isInvalid={!!formik.errors.password}
               />
+              {formik.touched.password && formik.errors.password
+                ? <Form.Control.Feedback type="invalid">
+                    {formik.errors.password}
+                  </Form.Control.Feedback>
+                : null}
             </Form.Group>
             <Button className="w-100" size="lg" variant="primary" type="submit">
               Sign up
