@@ -4,6 +4,9 @@
 # Build output
 build/
 
+# Output of 'npm pack'
+*.tgz
+
 # Dependencies
 node_modules/
 
