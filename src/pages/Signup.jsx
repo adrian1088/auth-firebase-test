@@ -29,10 +29,10 @@ const SignUp = () => {
       })
       .catch(error => {
         const errObj = {
-          errorCode:error.code,
+          errorCode: error.code,
           errorMessage: error.message
         };
-        console.log("Error:",errObj);
+        console.log("Error:", errObj);
       });
     navigate("/");
   };
@@ -58,45 +58,48 @@ const SignUp = () => {
   return (
     <Container>
       <Row>
-        <Col className="col-md-3 mx-auto mt-5">
+        <Col className="col-md-6 mx-auto my-5">
           <h1 className="my-4">Sign Up</h1>
           <Form onSubmit={formik.handleSubmit}>
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label htmlFor="firstName">First Name </Form.Label>
+                <Form.Control
+                  name="firstName"
+                  type="text"
+                  size="lg"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.firstName}
+                  isInvalid={!!formik.errors.firstName}
+                />
+                {formik.touched.firstName && formik.errors.firstName
+                  ? <Form.Control.Feedback type="invalid">
+                      {formik.errors.firstName}
+                    </Form.Control.Feedback>
+                  : null}
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label htmlFor="lastName">Last Name </Form.Label>
+                <Form.Control
+                  type="text"
+                  name="lastName"
+                  size="lg"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.lastName}
+                  isInvalid={!!formik.errors.lastName}
+                />
+                {formik.touched.lastName && formik.errors.lastName
+                  ? <Form.Control.Feedback type="invalid">
+                      {formik.errors.lastName}
+                    </Form.Control.Feedback>
+                  : null}
+              </Form.Group>
+            </Row>
+
             <Form.Group className="mb-3">
-              <Form.Label htmlFor="firstName">First Name </Form.Label>
-              <Form.Control
-                name="firstName"
-                type="text"
-                size="lg"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.firstName}
-                isInvalid={!!formik.errors.firstName}
-              />
-              {formik.touched.firstName && formik.errors.firstName
-                ? <Form.Control.Feedback type="invalid">
-                    {formik.errors.firstName}
-                  </Form.Control.Feedback>
-                : null}
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label htmlFor="lastName">Last Name </Form.Label>
-              <Form.Control
-                type="text"
-                name="lastName"
-                size="lg"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.lastName}
-                isInvalid={!!formik.errors.lastName}
-              />
-              {formik.touched.lastName && formik.errors.lastName
-                ? <Form.Control.Feedback type="invalid">
-                    {formik.errors.lastName}
-                  </Form.Control.Feedback>
-                : null}
-            </Form.Group>
-            <Form.Group className="mb-3">
-            <Form.Label htmlFor="email">Email </Form.Label>
+              <Form.Label htmlFor="email">Email </Form.Label>
               <Form.Control
                 type="email"
                 name="email"
@@ -113,7 +116,7 @@ const SignUp = () => {
                 : null}
             </Form.Group>
             <Form.Group className="mb-3">
-            <Form.Label htmlFor="password">Password </Form.Label>
+              <Form.Label htmlFor="password">Password </Form.Label>
               <Form.Control
                 type="password"
                 name="password"

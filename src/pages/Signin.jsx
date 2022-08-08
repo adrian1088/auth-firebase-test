@@ -16,6 +16,7 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   const handleSubmit = values => {
+    // console.log(values);
     const { email, password } = values;
     signInWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
@@ -50,7 +51,7 @@ const SignIn = () => {
   return (
     <Container>
       <Row>
-        <Col className="col-md-3 mx-auto mt-5">
+        <Col md={4} sm={6} xs={7} className="mx-auto my-5">
           <h1 className="my-4">Sign In</h1>
           <Form onSubmit={formik.handleSubmit}>
             <Form.Group className="mb-3">

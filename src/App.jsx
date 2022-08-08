@@ -1,14 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AuthContextProvider from "./contexts/AuthContextProvider";
 import Home from "./pages/Home";
 import SignIn from "./pages/Signin";
 import SignUp from "./pages/Signup";
 import Test from "./pages/Test";
 
-import { AuthProvider } from "./AuthProvider";
-
 const App = () => {
   return (
-    <AuthProvider>
+    <AuthContextProvider>
         <BrowserRouter>
           <Routes>
             <Route exact path="/" element={<Home />} />
@@ -17,7 +16,7 @@ const App = () => {
             <Route exact path="/test" element={<Test />} />
           </Routes>
         </BrowserRouter>
-    </AuthProvider>
+    </AuthContextProvider>
   );
 };
 
