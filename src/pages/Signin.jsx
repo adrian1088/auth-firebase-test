@@ -16,7 +16,6 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   const handleSubmit = values => {
-    // console.log(values);
     const { email, password } = values;
     signInWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
