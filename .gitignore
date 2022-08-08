@@ -3,7 +3,7 @@
 
 # Build output
 build/
-dist
+dist/
 # Output of 'npm pack'
 *.tgz
 
